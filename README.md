@@ -3,7 +3,7 @@
 A lease recently used cache that consists of a Lrucache library (functional core), Cache GenServer (boundary layer) and Phoenix REST API.
 
 The cache can be initialized (or configured) with an initial capacity
-- The cache should support any type of object being stored in the value.
+- The cache should support any type of object being stored in the value including: string, atom, list, tuple, integer (1, 0x1F), float, boolean, map, binary
 - The following operations will be supported:
 - a. get(key) - Gets the value of the key that exists in the cache
 - b. put(key, value) - Updates (or Inserts the value if it does not exist in the cache).

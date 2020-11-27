@@ -21,7 +21,8 @@ defmodule Cache.Core do
         :ets.new(name, [:named_table, :public, {:read_concurrency, true}])
     end
 
-    # Handle Get
+    # Handle Get - Gets the value of the key that exists in the cache
+    # Returns a value if it exists or else an :error atom
     def handle_get(name, key, retreive \\ true) do
         case :ets.lookup(name, key) do
         [{_, _, value}] ->
@@ -34,7 +35,8 @@ defmodule Cache.Core do
         end
     end
 
-    # Handle Put 
+    # Handle Put - Updates (or Inserts the value if it does not exist in the cache)
+    # Value Data Type Support - can be any of string, atom, list, tuple, integer (1, 0x1F), float, boolean, map, binary
     def handle_put(table, key, value, cache_size) do
         ttl_table = get_ttl_table_name(table)
         delete_time_to_live(ttl_table,table, key)

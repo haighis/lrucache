@@ -20,3 +20,13 @@ Cache.Core.handle_put(:my,"1","test", 5)
 Cache.Core.handle_put(:my,"2","tester", 5)
 Cache.Core.handle_get(:my,"1")
 ```
+
+## Running Lrucache GenServer
+
+```
+iex -S mix 
+
+{:ok, server} = Cache.Server.start_link("test",5)
+Cache.Server.put server, "1", "test"
+Cache.Server.get server, "1"
+```

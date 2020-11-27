@@ -12,6 +12,7 @@
 # - an ets table to store the time to live values
 # Usage
 defmodule Cache.Core do
+    # Init
     def init(name) do        
         # Create Time to live ets table to store time to live value
         ttl_table = get_ttl_table_name(name) 
@@ -20,10 +21,13 @@ defmodule Cache.Core do
         :ets.new(name, [:named_table, :public, {:read_concurrency, true}])
     end
 
+    # Handle Get - Gets the value of the key that exists in the cache
+    # Returns a value if it exists or else an :error atom
     def handle_get(name, key, retreive \\ true) do
         case :ets.lookup(name, key) do
         [{_, _, value}] ->
             # return the value for the specified key
+            retreive && handle_retrieve(name,key) 
             value
         [] ->
             # return an error atom if key not found
@@ -31,31 +35,68 @@ defmodule Cache.Core do
         end
     end
 
+    # Handle Put - Updates (or Inserts the value if it does not exist in the cache)
+    # Value Data Type Support - can be any of string, atom, list, tuple, integer (1, 0x1F), float, boolean, map, binary
     def handle_put(table, key, value, cache_size) do
+        ttl_table = get_ttl_table_name(table)
+        delete_time_to_live(ttl_table,table, key)
+        unique_value = insert_time_to_live(ttl_table, key)
+        :ets.insert(table, {key, unique_value, value})
+        clear_cache(ttl_table,table,cache_size)
+        :ok
     end
 
+    # Handle Retreive - Logic for least recently used entries in time to live table and update ttl value in main cache ets table
     def handle_retrieve(table, key) do
+        ttl_table = get_ttl_table_name(table)
+        delete_time_to_live(ttl_table,table, key)
+        uniq = insert_time_to_live(ttl_table, key)
+        :ets.update_element(table, key, [{2, uniq}])
+        :ok
     end
 
+    # Delete Key in cache
     def handle_delete(table, key) do
+        ttl_table = get_ttl_table_name(table)
+        delete_time_to_live(ttl_table,table, key)
+        :ets.delete(table, key)
+        :ok
     end
 
-    defp delete_time_to_live(ttl_table, table, key) do        
+    # Delete time to live for ttle table key
+    defp delete_time_to_live(ttl_table, table, key) do
+        case :ets.lookup(table, key) do
+        [{_, old_unique_value, _}] ->
+            :ets.delete(ttl_table, old_unique_value)
+        _ ->
+            nil
+        end
     end
 
-    defp insert_time_to_live(ttl_table, key) do        
+    # Insert time to live for ttl table key
+    defp insert_time_to_live(ttl_table, key) do
+        uniq = :erlang.unique_integer([:monotonic])
+        :ets.insert(ttl_table, {uniq, key})
+        uniq
     end
 
+    # Gets the ttle table name
     defp get_ttl_table_name(table) do
         ttl_table = :"#{table}_ttl"
         ttl_table
     end
 
+    # Clear cache if the size is greater than original capacity
     defp clear_cache(ttl_table, table, cache_capacity) do
-        # Clear cache if the size is greater than original capacity
         if :ets.info(table, :size) > cache_capacity do
+            #IO.puts "in clear_cache size is greater than cache cache_capacity"
+            oldest_timestamp = :ets.first(ttl_table) # used to be  oldest_timestamp = :ets.first(ttl_table)
+            [{_, old_key}] = :ets.lookup(ttl_table, oldest_timestamp)
+            :ets.delete(ttl_table, oldest_timestamp)
+            :ets.delete(table, old_key)
             true
         else
+            #IO.puts "in clear_cache size is not greater than cache cache_capacity"
             nil
         end
     end

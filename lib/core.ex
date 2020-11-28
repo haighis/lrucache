@@ -23,11 +23,11 @@ defmodule Cache.Core do
 
     # Handle Get - Gets the value of the key that exists in the cache
     # Returns a value if it exists or else an :error atom
-    def handle_get(name, key, retreive \\ true) do
+    def get(name, key, retreive \\ true) do
         case :ets.lookup(name, key) do
         [{_, _, value}] ->
             # return the value for the specified key
-            retreive && handle_retrieve(name,key) 
+            retreive && retrieve(name,key) 
             value
         [] ->
             # return an error atom if key not found
@@ -37,7 +37,7 @@ defmodule Cache.Core do
 
     # Handle Put - Updates (or Inserts the value if it does not exist in the cache)
     # Value Data Type Support - can be any of string, atom, list, tuple, integer (1, 0x1F), float, boolean, map, binary
-    def handle_put(table, key, value, cache_size) do
+    def put(table, key, value, cache_size) do
         ttl_table = get_ttl_table_name(table)
         delete_time_to_live(ttl_table,table, key)
         unique_value = insert_time_to_live(ttl_table, key)
@@ -46,20 +46,26 @@ defmodule Cache.Core do
         :ok
     end
 
+    # Delete Key in cache
+    def delete(table, key) do
+        ttl_table = get_ttl_table_name(table)
+        delete_time_to_live(ttl_table,table, key)
+        :ets.delete(table, key)
+        :ok
+    end
+
+    # Cache cleanup that removes all ets tables
+    def cleanup(table) do
+        :ets.delete(table)
+        :ets.delete(get_ttl_table_name(table))
+    end
+
     # Handle Retreive - Logic for least recently used entries in time to live table and update ttl value in main cache ets table
-    def handle_retrieve(table, key) do
+    defp retrieve(table, key) do
         ttl_table = get_ttl_table_name(table)
         delete_time_to_live(ttl_table,table, key)
         uniq = insert_time_to_live(ttl_table, key)
         :ets.update_element(table, key, [{2, uniq}])
-        :ok
-    end
-
-    # Delete Key in cache
-    def handle_delete(table, key) do
-        ttl_table = get_ttl_table_name(table)
-        delete_time_to_live(ttl_table,table, key)
-        :ets.delete(table, key)
         :ok
     end
 

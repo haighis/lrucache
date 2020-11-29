@@ -1,6 +1,6 @@
 # Lrucache
 
-A lease recently used cache that consists of a Lrucache library (functional core), Cache GenServer (boundary layer) and Phoenix REST API.
+A least recently used cache that consists of a Lrucache library (functional core), Cache GenServer (boundary layer) and Phoenix REST API.
 
 The cache can be initialized (or configured) with an initial capacity
 - The cache should support any type of object being stored in the value including: string, atom, list, tuple, integer (1, 0x1F), float, boolean, map, binary
@@ -31,4 +31,10 @@ iex -S mix
 Cache.Server.put server, "1", "test"
 Cache.Server.get server, "1"
 Cache.Server.stop server
+```
+
+## Running Phoenix REST API
+
+```
+iex -S mix phx.server
 ```

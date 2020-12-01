@@ -11,6 +11,12 @@
 # - an ets table for key/values to store the key, a unique time to live value, and value
 # - an ets table to store the time to live values
 # Usage
+# Cache.Core.init(:my) - create
+# Cache.Core.put(:my,1,"test1", 2) - put an item in cache
+# Cache.Core.put(:my,2,"test2", 2) - put an item in cahce
+# Cache.Core.get(:my,"2") # will be the oldest used
+# Cache.Core.get(:my,"1") # will be the most recently used
+# Cache.Core.cleanup(:my) - cleanup cache
 defmodule Cache.Core do
     # Init
     def init(name) do        

@@ -12,7 +12,7 @@ defmodule Cache.Server do
     # Import Functional core libary that has our Lrucache Business Logic
     alias Cache.Core
     # Client API
-    def start_link(cache_name, cache_capacity) do
+    def start_link(cache_name, cache_capacity) when is_integer(cache_capacity) do
         GenServer.start_link(__MODULE__, {cache_name, cache_capacity})
     end
 

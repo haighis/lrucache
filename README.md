@@ -20,9 +20,9 @@ The cache can be initialized (or configured) with an initial capacity
 iex -S mix 
 
 Cache.Core.init(:my)
-Cache.Core.handle_put(:my,"1","test", 5)
-Cache.Core.handle_put(:my,"2","tester", 5)
-Cache.Core.handle_get(:my,"1")
+Cache.Core.put(:my,"1","test", 5)
+Cache.Core.put(:my,"2","tester", 5)
+Cache.Core.get(:my,"1")
 Cache.Core.cleanup(:my)
 ```
 

@@ -10,6 +10,10 @@ The cache can be initialized (or configured) with an initial capacity
 - When the cache capacity has been reached, inserting new keys should result in the least used key being evicted.
 - Test coverage
 
+## Installing
+
+- Install dependencies with `mix deps.get`
+
 ## Running Lrucache Library
 
 ```
@@ -35,8 +39,6 @@ Cache.Server.stop server
 
 ## Running Phoenix server
 
-- Install dependencies with `mix deps.get`
-- Create and migrate your database with `mix ecto.setup`
 - Install Node.js dependencies with `npm install` inside the `assets` directory
 - Start Phoenix endpoint with `mix phx.server`
 - Save a key/value by making a POST request to http://localhost:4000/api/keyvalues

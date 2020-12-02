@@ -60,3 +60,7 @@ wget --quiet \
   --output-document \
   - http://localhost:4000/api/keyvalues/2
 ```
+
+## Running Unit Tests
+
+`mix test`

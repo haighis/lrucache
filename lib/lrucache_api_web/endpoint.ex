@@ -28,10 +28,10 @@ defmodule LrucacheApiWeb.Endpoint do
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
-  if code_reloading? do
-    plug Phoenix.CodeReloader
-    plug Phoenix.Ecto.CheckRepoStatus, otp_app: :lrucache_api
-  end
+  # if code_reloading? do
+  #   plug Phoenix.CodeReloader
+  #   , otp_app: :lrucache_api
+  # end
 
   plug Phoenix.LiveDashboard.RequestLogger,
     param_key: "request_logger",

@@ -7,8 +7,8 @@
 # Cache.Server.put server, "1", "test"
 # Cache.Server.get server, "1"
 # Cache.Server.stop server
-# By Name - used in a supervisor
-# Cache.Server, name: :mycache, cache_name: "mycache", cache_capacity: 5
+# Start GenServer by Name 
+# Cache.Server.start_link(cache_name: "test", cache_capacity: 5, name: :mycache)
 # GenServer.cast(:mycache,{:put, 1,1})
 # GenServer.call(:mycache,{:get, 1})  
 defmodule Cache.Server do

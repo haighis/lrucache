@@ -12,7 +12,7 @@ defmodule CoreGenServerTest do
         stop server
     end
 
-    test "cache_genserver_get_returns_value" do
+    test "cache_genserver_put_get_returns_value" do
         {_, server} = start_link("test",5)
         put server, 1, "test1"
         result = get server, 1
@@ -24,5 +24,21 @@ defmodule CoreGenServerTest do
         {_, server} = start_link("test",5)
         stop server
         refute Process.alive? server
+    end
+
+    test "cache_genserver_startlink_with_name_has_correct_state" do
+        start_link(cache_name: "test", cache_capacity: 5, name: :testname)
+        result = :sys.get_state(:testname)   
+        assert result.cache_name == "test"
+        assert result.cache_capacity == 5
+        stop :testname
+    end    
+
+    test "cache_genserver_startlink_with_name_put_get_returns_value" do
+        start_link(cache_name: "test", cache_capacity: 5, name: :testname)
+        GenServer.cast(:testname,{:put, 1, "test1"})
+        result = GenServer.call(:testname,{:get, 1})  
+        assert result == "test1"
+        stop :testname
     end
 end

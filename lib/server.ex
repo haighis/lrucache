@@ -7,11 +7,22 @@
 # Cache.Server.put server, "1", "test"
 # Cache.Server.get server, "1"
 # Cache.Server.stop server
+# By Name - used in a supervisor
+# Cache.Server, name: :mycache, cache_name: "mycache", cache_capacity: 5
+# GenServer.cast(:mycache,{:put, 1,1})
+# GenServer.call(:mycache,{:get, 1})  
 defmodule Cache.Server do
     use GenServer
     # Import Functional core libary that has our Lrucache Business Logic
     alias Cache.Core
     # Client API
+    def start_link(opts) do
+        cache_name = opts[:cache_name]
+        cache_capacity = opts[:cache_capacity]
+        name = opts[:name]
+        GenServer.start_link(__MODULE__, {cache_name, cache_capacity}, name: name)
+    end
+
     def start_link(cache_name, cache_capacity) do
         GenServer.start_link(__MODULE__, {cache_name, cache_capacity})
     end
@@ -38,7 +49,8 @@ defmodule Cache.Server do
     # Server (callbacks)
     def handle_call({:get, key}, _from, state) do
         # Call functional core library to get a value by key
-        {:reply, Core.get(String.to_atom(state.cache_name),key), state}
+        val = Core.get(String.to_atom(state.cache_name),key)
+        {:reply, val, state}
     end
 
     def handle_cast({:put, key,value}, state) do

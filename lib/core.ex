@@ -1,9 +1,8 @@
 # Functional Core
-# A least recently used cache that is developed with a functional core. 
+# A least recently used cache that is developed as a functional core. 
 # The functional core is library implementation.
 # The functional core should work on data that’s validated and safe. It should be predictable, so it avoids side effects.
-# A functional core is means to easily reason
-# about the application core business logic that is the same pattern 
+# A functional core is means to easily reason about the application core business logic that is the same pattern 
 # created by James Edward Gray and Bruce A. Tate found in the book "Designing Elixir Systems with OTP". 
 # 
 # Design

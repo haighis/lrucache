@@ -39,20 +39,22 @@ Cache.Server.stop server
 - Create and migrate your database with `mix ecto.setup`
 - Install Node.js dependencies with `npm install` inside the `assets` directory
 - Start Phoenix endpoint with `mix phx.server`
-
 - Save a key/value by making a POST request to http://localhost:4000/api/keyvalues
+```
 wget --quiet \
   --method POST \
   --header 'Content-Type: application/json' \
   --body-data '{"key": "2","value": "kelton"}' \
   --output-document \
   - http://localhost:4000/api/keyvalues
+```
 
 - Get a value for key by making a GET request to http://localhost:4000/api/keyvalues
 
+```
 wget --quiet \
   --method GET \
   --header 'Content-Type: application/json' \
   --output-document \
   - http://localhost:4000/api/keyvalues/2
-
+```
